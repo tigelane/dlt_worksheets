@@ -1,0 +1,23 @@
+<body> 
+
+<div data-role="page" data-theme={{theme}}>
+
+<div data-role="header" style="overflow:hidden;" data-theme={{theme_cancel}}>
+    <h1>{{ page_header }}</h1>
+</div><!-- /header -->
+
+    <div data-role="content" data-theme={{theme}}>   
+    <p></p>
+    <ul data-role="listview" data-filter="true" data-filter-placeholder="Search jobs..." data-inset="true">
+
+        {% for record in records %}
+        <!-- Create a list for the records passed to the page. -->
+        <li><a href="/add_ws/{{ record[0] }}/">Project: {{ record[1] }}          Customer: {{ record[2] }}</a></li>
+        {% endfor %}
+
+    </ul>
+
+<p></p>
+    <!--<a href="index.html"  class="ui-mini ui-btn ui-btn-{{theme_cancel}} ui-icon-delete ui-btn-icon-top ui-corner-all" >Cancel</a>
+    -->
+    </div><!-- /content -->

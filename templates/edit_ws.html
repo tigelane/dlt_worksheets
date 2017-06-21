@@ -1,0 +1,95 @@
+
+<body> 
+
+<div data-role="page" data-theme={{theme}}>
+
+<form action="/save_ws" method="post">
+<input type="hidden" name="worksheet_id" value={{form_data["worksheet_id"]}} />
+
+
+<div data-role="header" style="overflow:hidden;" data-theme={{theme}}>
+    <h1>Project: {{form_data["project_name"]}} &ensp;-&ensp; Worksheet date: {{form_data["date"]}}</h1>
+
+
+    <button type="submit" name="close" value= "close" class="ui-shadow ui-icon-delete ui-btn-icon-left ui-btn ui-btn-left ui-corner-all ui-mini">Close</button>
+    <!--- Old buttons
+    <a href="/save/close" data-icon="back" class="ui-btn-left" >Close</a>
+    <a href="/save" data-icon="check" class="ui-btn-right">Save</a>
+    -->
+    <button type="submit" name="save" value="save" class="ui-shadow ui-icon-check ui-btn-icon-right ui-btn ui-btn-right ui-corner-all ui-mini">Save</button>
+
+    <div data-role="navbar" data-theme={{theme}}>
+
+        <ul>
+            <li><a href="/add_resource/{{form_data["worksheet_id"]}}" data-rel="dialog" data-transition="slidedown">Add Resource</a></li>
+            <li><a href="/add_material/{{form_data["worksheet_id"]}}" data-rel="dialog" data-transition="slidedown">Add Materials</a></li>
+        </ul>
+    </div><!-- /navbar -->
+</div><!-- /header -->
+
+<div data-role="content" data-theme={{theme}}>   
+
+        <div data-role="fieldcontain">
+            <label for="flip-checkbox-2">Worksheet Open:</label>
+            <input type="checkbox" data-role="flipswitch" name="ws_status" id="ws_status" data-on-text="Yes" data-off-text="No" data-wrapper-class="custom-size-flipswitch" checked="">
+        </div>
+
+        <div data-role="fieldcontain">
+            <label for="notes">Notes:</label>
+            <textarea name="notes" id="notes"></textarea>
+        </div>
+
+
+    <!--   Old Submit button
+    <label for="submit-6">Send:</label>
+    <button type="submit" id="submit-6" class="ui-shadow ui-btn ui-corner-all ui-mini">Submit</button>
+    -->
+
+    </form>
+
+    <table data-role="table" id="resources_table" data-mode="columntoggle" class="ui-body-{{theme}} ui-shadow table-stripe ui-responsive" data-column-btn-theme={{theme}} data-column-btn-text="Columns..." data-column-popup-theme={{theme}}>
+    <thead>
+        <tr class="ui-bar-d">
+            <th data-priority="1">Resource</th>
+            <th data-priority="1">Hours</th>
+            <th data-priority="3">Edit</th>
+            </tr>
+    </thead>
+    <tbody>
+        {% for record in form_data["resources"] %}
+        <tr>
+            <th>{{ record[0] }}</th>
+            <td>{{ record[1] }}</td>
+            <td><a href="" class="ui-btn ui-icon-gear ui-btn-icon-notext ui-corner-all" data-rel="dialog" data-transition="flip"></a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+
+    <p></p>
+
+    <table data-role="table" id="materials_table" data-mode="columntoggle" class="ui-body-{{theme}} ui-shadow table-stripe ui-responsive" data-column-btn-theme={{theme}} data-column-btn-text="Columns..." data-column-popup-theme={{theme}}>
+    <thead>
+    <tr class="ui-bar-{{theme}}">
+            <th data-priority="1">Materials</th>
+            <th data-priority="1">Price</th>
+            <th data-priority="3">Edit</th>
+            </tr>
+        </thead>
+    <tbody>
+        {% for record in form_data["materials"] %}
+        <tr>
+            <th>{{ record[0] }}</th>
+            <td>{{ record[1] }}</td>
+            <td><a href="" class="ui-btn ui-icon-gear ui-btn-icon-notext ui-corner-all" data-rel="dialog" data-transition="flip"></a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!--
+<a href="index.html"  class="ui-mini ui-btn ui-btn-{{theme_cancel}} ui-icon-delete ui-btn-icon-top ui-corner-all" >Cancel</a>
+-->
+    </div><!-- /content -->
+    </div><!-- /page -->
+</body>
