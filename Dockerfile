@@ -37,4 +37,4 @@ WORKDIR /usr/local/brimstone
 EXPOSE 80
 
 # By default when this container runs, simply start the application
-CMD RUN mkdir /usr/local/brimstone/dltws_web.py
+CMD RUN mkdir /usr/local/brimstone/dlt_ws_web.py
