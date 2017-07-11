@@ -20,15 +20,15 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install git mysql-client
 ####################
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install python2.7 python-pip python-dev libmysqlclient-dev
 RUN DEBIAN_FRONTEND=noninteractive pip install MySQL-python flask
-
-############
-# Development only tools
-############
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install vim
 RUN pip install requests
 
+############
+# Development only tools - remove before runtime
+############
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install vim
+
 #################
-# Install                   #
+# Install       #
 #################
 CMD mkdir /usr/local/brimstone
 ADD brimstone_app.py /usr/local/brimstone/
