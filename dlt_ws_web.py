@@ -206,12 +206,18 @@ def open_url(url):
             error = "Response from Application Server: No records found."
             return {'result':0, 'data':render_error_screen(error)}
 
+    else:   
+        decoded_json = json.loads(result.text)
+        error = "Some wierd error."
+        return {'result':0, 'data':render_error_screen(error)}
+
     # Need to check if there was another error.  Will have to look at the other web page to find what it's doing.
     # if 0 == 1:
     #     pass
     # else:   
     #     error = "Application Server Failure: We did not receive a proper response from the application server.  Status Code != 200: " + result.text
     #     return render_error_screen(error)
+
 
     return {'result':1, 'data':decoded_json['results']}
 

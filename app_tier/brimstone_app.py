@@ -17,8 +17,8 @@ db_name = 'job_worksheets'
 db_pass = 'H2xE6h6Bo9cgsnkiUhW076Qf'
 db_addr = os.getenv('SQL_SERVER_IPADDR', 'localhost')
 
-sql_jobs_all = 'SELECT jobs.name, customers.name, jobs.notes, status.status FROM jobs JOIN customers ON jobs.customer_id = customers.id JOIN status ON jobs.status_id = status.id WHERE status.status IS NOT NULL;'
-sql_jobs_open = 'SELECT jobs.id, jobs.name, customers.name, jobs.notes, status.status FROM jobs JOIN customers ON jobs.customer_id = customers.id JOIN status ON jobs.status_id = status.id WHERE status.status = "Open";'
+sql_ws_all = 'SELECT jobs.name, customers.name, jobs.notes, status.status FROM jobs JOIN customers ON jobs.customer_id = customers.id JOIN status ON jobs.status_id = status.id WHERE status.status IS NOT NULL;'
+sql_ws_open = 'SELECT jobs.id, jobs.name, customers.name, jobs.notes, status.status FROM jobs JOIN customers ON jobs.customer_id = customers.id JOIN status ON jobs.status_id = status.id WHERE status.status = "Open";'
 sql_jobs_all = 'SELECT jobs.name, customers.name, jobs.notes, status.status FROM jobs JOIN customers ON jobs.customer_id = customers.id JOIN status ON jobs.status_id = status.id WHERE status.status IS NOT NULL;'
 sql_jobs_open = 'SELECT jobs.id, jobs.name, customers.name, jobs.notes, status.status FROM jobs JOIN customers ON jobs.customer_id = customers.id JOIN status ON jobs.status_id = status.id WHERE status.status = "Open";'
 
@@ -144,7 +144,7 @@ def apiv1_get_ws(worksheet_id):
     functionName = "def apiv1_get_ws(worksheet_id):"
     myList = []
 
-    sql_query = 'SELECT jobs.name, worksheets.date, worksheets.notes, status.status FROM worksheets JOIN jobs ON worksheets.jobs_id = jobs.id JOIN status ON worksheets.status_id = status.id WHERE worksheets.id = {};'.format(worksheet_id)
+    sql_query = 'SELECT jobs.name, worksheets.date_open, worksheets.notes, status.status FROM worksheets JOIN jobs ON worksheets.jobs_id = jobs.id JOIN status ON worksheets.status_id = status.id WHERE worksheets.id = {};'.format(worksheet_id)
 
     try:
         open_db()
@@ -166,7 +166,6 @@ def apiv1_get_ws(worksheet_id):
 def apiv1_worksheet_save():
     functionName = "def apiv1_worksheet_save():"
     request.get_data()
-    #print (request.json)
 
     reply = {'status': 'OK', 'results': myList}    
     return jsonify(reply)
@@ -324,8 +323,6 @@ def incomming():
         reply = {'status': 'Error'}
 
     return jsonify(reply)
-
-
 
 if __name__ == '__main__':
     write_log("Using DB Server at: {0}".format(db_addr))
