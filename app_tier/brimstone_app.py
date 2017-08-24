@@ -17,8 +17,8 @@ db_name = 'job_worksheets'
 db_pass = 'H2xE6h6Bo9cgsnkiUhW076Qf'
 db_addr = os.getenv('SQL_SERVER_IPADDR', 'localhost')
 
-sql_ws_all = 'SELECT jobs.name, customers.name, jobs.notes, status.status FROM jobs JOIN customers ON jobs.customer_id = customers.id JOIN status ON jobs.status_id = status.id WHERE status.status IS NOT NULL;'
-sql_ws_open = 'SELECT jobs.id, jobs.name, customers.name, jobs.notes, status.status FROM jobs JOIN customers ON jobs.customer_id = customers.id JOIN status ON jobs.status_id = status.id WHERE status.status = "Open";'
+sql_ws_all = 'SELECT worksheets.id, jobs.name, worksheets.date_open, worksheets.notes, status.status FROM worksheets JOIN jobs ON jobs.id = worksheets.jobs_id JOIN status ON worksheets.status_id = status.id WHERE status.status IS NOT NULL;'
+sql_ws_open = 'SELECT worksheets.id, jobs.name, worksheets.date_open, worksheets.notes, status.status FROM worksheets JOIN jobs ON jobs.id = worksheets.jobs_id JOIN status ON worksheets.status_id = status.id WHERE status.status = "Open";'
 sql_jobs_all = 'SELECT jobs.name, customers.name, jobs.notes, status.status FROM jobs JOIN customers ON jobs.customer_id = customers.id JOIN status ON jobs.status_id = status.id WHERE status.status IS NOT NULL;'
 sql_jobs_open = 'SELECT jobs.id, jobs.name, customers.name, jobs.notes, status.status FROM jobs JOIN customers ON jobs.customer_id = customers.id JOIN status ON jobs.status_id = status.id WHERE status.status = "Open";'
 
@@ -168,35 +168,6 @@ def apiv1_worksheet_save():
     request.get_data()
 
     reply = {'status': 'OK', 'results': myList}    
-    return jsonify(reply)
-
-@app.route('/show_jobs/<jobs>/')
-def show_jobs(jobs):
-    functionName = "def show_jobs(jobs):"
-    if jobs == 'all':
-        write_log("Showing jobs - All - old api")
-        sql_query = all_sql_query
-    else:
-        write_log("Showing jobs - Open - old api")
-        sql_query = open_sql_query
-
-    ''' Get all of the records and return them as a list of dictonarys'''
-    myList = []
-    
-    try:
-        open_db()
-        cursor = db.cursor()
-        cursor.execute(sql_query)
-        data = cursor.fetchall()
-        for row in data:
-            myList.append([row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9],row[10], row[11], row[12], row[13], row[14], row[15]])
-
-        close_db()
-        reply = {'status': 'OK', 'results': myList}
-    except:
-        reply = {'status': 'FAIL', 'results': "The Application server is OK, but is unable to show records from database {0}!".format(db_name)}
-    
-    write_log("{0} - {1}".format(reply['status'], reply['results']))
     return jsonify(reply)
 
 def open_mysql():

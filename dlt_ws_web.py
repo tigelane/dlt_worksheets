@@ -88,7 +88,7 @@ def add_ws(project_id):
         else:
             worksheet_id = data['data']
 
-    #print ("Created worksheet: {}".format(worksheet_id[0][0]))
+    print ("Created worksheet: {}".format(worksheet_id[0][0]))
     html = edit_ws(worksheet_id[0][0])
     return edit_ws(worksheet_id[0][0])
 
