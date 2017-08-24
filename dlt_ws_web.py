@@ -6,6 +6,10 @@ from datetime import datetime
 import sys, requests, re, random, os
 import json, time
 
+# Log file enablement
+log_file_name = "/usr/local/brimstone.log"
+log_file_enable = True
+
 applicationTitle = "DLT_WS_Web"
 app_addr = os.getenv('APP_SERVER_IPADDR', 'localhost')
 app_port = 5000
@@ -23,6 +27,20 @@ theme_file_1 = "themes/dlt_themes.min.css"
 theme_file_2 = "themes/jquery.mobile.icons.min.css" 
 
 app = Flask(__name__)
+
+def write_log(entry):
+    if log_file_enable == False:
+        return
+
+    try:
+        log_file = open(log_file_name, "a")
+    except:
+        print("BAD  - Unable to open file for append:   {0}\n".format(log_file_name))
+        sys.exit()
+
+    logEntry = "{0} - {1}".format(entry, inspect.stack()[1][3])
+    log_file.write(logEntry)
+    log_file.close()
 
 def basic_render(data_url, page_header, rendering_file, form_data):
     if data_url != "":
@@ -88,9 +106,11 @@ def add_ws(project_id):
         else:
             worksheet_id = data['data']
 
-    print ("Created worksheet: {}".format(worksheet_id[0][0]))
-    html = edit_ws(worksheet_id[0][0])
-    return edit_ws(worksheet_id[0][0])
+    # Worksheet id that was just created
+    new_worksheet = worksheet_id[0][0]
+
+    # print ("Created worksheet: {}".format(worksheet_id[0][0]))
+    return edit_ws(new_worksheet)
 
 @app.route('/edit_ws/<worksheet_id>/')
 def edit_ws(worksheet_id):
@@ -110,11 +130,14 @@ def edit_ws(worksheet_id):
             # print e
             return {'result':0, 'data':render_error_screen(e)}
 
-    print ("Form Data: {}".format(form_data))
+    # print ("Form Data: {}".format(form_data))
     # Change the following to get info from the worksheet
-    # data_url = '{0}/get_worksheet/'.format(url_base)
+    writ
+    data_url = '{0}/get_worksheet/'.format(url_base)
     rendering_file = 'edit_ws.html'
     page_header = "{}".format(worksheet_id)
+
+    worksheet_data = None
     resources = [["Cody", 9], ["David", 4], ["Kerry", 10]]
     materials = [["Logs", 34.86], ["Dirt", 254.50], ["Stuff and Stuff", 389.75]]
     
