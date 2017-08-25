@@ -2,9 +2,10 @@
 from flask import Flask, jsonify, request
 app = Flask(__name__)
 
-import MySQLdb, sys, os, json, requests, datetime, inspect
+import MySQLdb, sys, os, json, requests, datetime
 
 # Log file enablement
+import inspect
 log_file_name = "/usr/local/brimstone.log"
 log_file_enable = True
 
@@ -35,9 +36,12 @@ def write_log(entry):
         print("BAD  - Unable to open file for append:   {0}\n".format(log_file_name))
         sys.exit()
 
-    logEntry = "{0} - {1}".format(entry, inspect.stack()[1][3])
-    log_file.write(logEntry)
-    log_file.close()
+    try:
+        logEntry = "{0} - Calling Function: {1}".format(entry, inspect.stack()[1][3])
+        log_file.write(logEntry)
+        log_file.close()
+    except:
+        print "cant do a log"
 
 @app.route('/')
 @app.route('/index')
@@ -141,7 +145,7 @@ def apiv1_add_ws(project_id):
 
 @app.route('/api/v1/get_ws/<worksheet_id>/')
 def apiv1_get_ws(worksheet_id):
-    functionName = "def apiv1_get_ws(worksheet_id):"
+    #functionName = "def apiv1_get_ws(worksheet_id):"
     myList = []
 
     sql_query = 'SELECT jobs.name, worksheets.date_open, worksheets.notes, status.status FROM worksheets JOIN jobs ON worksheets.jobs_id = jobs.id JOIN status ON worksheets.status_id = status.id WHERE worksheets.id = {};'.format(worksheet_id)
@@ -164,7 +168,7 @@ def apiv1_get_ws(worksheet_id):
 
 @app.route('/api/v1/worksheet_save')
 def apiv1_worksheet_save():
-    functionName = "def apiv1_worksheet_save():"
+    #functionName = "def apiv1_worksheet_save():"
     request.get_data()
 
     reply = {'status': 'OK', 'results': myList}    

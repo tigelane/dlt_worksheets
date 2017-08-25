@@ -7,6 +7,7 @@ import sys, requests, re, random, os
 import json, time
 
 # Log file enablement
+import inspect
 log_file_name = "/usr/local/brimstone.log"
 log_file_enable = True
 
@@ -38,9 +39,10 @@ def write_log(entry):
         print("BAD  - Unable to open file for append:   {0}\n".format(log_file_name))
         sys.exit()
 
-    logEntry = "{0} - {1}".format(entry, inspect.stack()[1][3])
+    logEntry = "{0} - Calling Function: {1}".format(entry, inspect.stack()[1][3])
     log_file.write(logEntry)
     log_file.close()
+    print "Log Entry: {}".format(logEntry)
 
 def basic_render(data_url, page_header, rendering_file, form_data):
     if data_url != "":
@@ -121,7 +123,7 @@ def edit_ws(worksheet_id):
     if data_url != "":
         try:
             data = open_url(data_url)
-            # print ("In Edit Worksheet data: {}".format(data))
+            print ("In Edit Worksheet data: {}".format(data))
             if data['result'] == 0:
                 return data['data']
             else:
@@ -130,9 +132,9 @@ def edit_ws(worksheet_id):
             # print e
             return {'result':0, 'data':render_error_screen(e)}
 
-    # print ("Form Data: {}".format(form_data))
+    print ("Form Data: {}".format(form_data))
     # Change the following to get info from the worksheet
-    writ
+    write_log(data)
     data_url = '{0}/get_worksheet/'.format(url_base)
     rendering_file = 'edit_ws.html'
     page_header = "{}".format(worksheet_id)
