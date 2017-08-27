@@ -9,12 +9,12 @@
     <div data-role="content" data-theme="d">   
         <p></p>
 <ul data-role="listview" data-filter="true" data-filter-placeholder="Search worksheet..." data-inset="true">
-<li><a href="edit_ws.html">Project: It's a mess - 10/3/17</a></li>
-<li><a href="edit_ws.html">Project: 205 paving - 11/2/17</a></li>
-<li><a href="edit_ws.html">Project: Really long road - 12/3/17</a></li>
-<li><a href="edit_ws.html">Project: David's Driveway - 12/3/17</a></li>
-<li><a href="edit_ws.html">Project: Bob's Big hole - 12/3/17</a></li>
-<li><a href="edit_ws.html">Project: I5 pot holes - 10/3/17</a></li>
+
+    {% for record in records %}
+    <!-- Create a list for the records passed to the page. -->
+    <li><a href="/edit_ws/{{ record[0] }}/">Project: {{ record[1] }}          Customer: {{ record[2] }}</a></li>
+    {% endfor %}
+
 </ul>   
 
 <p></p>
