@@ -86,7 +86,7 @@ def apiv1_show_jobs(status):
     except:
         reply = {'status': 'FAIL', 'results': "The Application server is OK, but is unable to show records from database {0}!".format(db_name)}
     
-    write_log("{0} - {1}".format(reply['status'], reply['results']))
+    reply = {'general': reply}
     return jsonify(reply)
 
 @app.route('/api/v1/show_ws/<status>/')
@@ -113,6 +113,7 @@ def apiv1_show_ws(status):
         reply = {'status': 'FAIL', 'results': "The Application server is OK, but is unable to show records from database {0}!".format(db_name)}
     
     write_log("{0} - {1}".format(reply['status'], reply['results']))
+    reply = {'general': reply}
     return jsonify(reply)
 
 @app.route('/api/v1/add_ws/<project_id>/')
@@ -141,14 +142,29 @@ def apiv1_add_ws(project_id):
         reply = {'status': 'FAIL', 'results': "The Application server is OK, but is unable to show records from database {0}!".format(db_name)}
     
     write_log("{0} - {1}".format(reply['status'], reply['results']))
+    reply = {'general': reply}
     return jsonify(reply)
 
 @app.route('/api/v1/get_ws/<worksheet_id>/')
 def apiv1_get_ws(worksheet_id):
-    #functionName = "def apiv1_get_ws(worksheet_id):"
-    myList = []
+    # return:
+    #     form_data = {"project_name": form_data[0][0], "worksheet_id":worksheet_id, "date":"15/5/2017", "resources":resources, "materials":materials}
 
     sql_query = 'SELECT jobs.name, worksheets.date_open, worksheets.notes, status.status FROM worksheets JOIN jobs ON worksheets.jobs_id = jobs.id JOIN status ON worksheets.status_id = status.id WHERE worksheets.id = {};'.format(worksheet_id)
+    general = get_from_db(sql_query)
+    # print form_data
+    sql_query = 'SELECT resource.name, wsheet2resource.hours, wsheet2resource.rate, wsheet2resource.notes FROM wsheet2resource JOIN worksheets ON worksheets.id = wsheet2resource.worksheet_id JOIN resource ON wsheet2resource.resource_id = resource.id WHERE wsheet2resource.worksheet_id = {};'.format(worksheet_id)
+    resources = get_from_db(sql_query)
+    # print resources
+    sql_query = 'SELECT materials.name, materials.cost, materials.notes FROM materials WHERE materials.worksheet_id = {};'.format(worksheet_id)
+    materials = get_from_db(sql_query)
+    # print materials
+
+    all_info = {'general': general, 'resources': resources, 'materials':materials}
+    return jsonify(all_info)
+
+def get_from_db(sql_query):
+    myList = []
 
     try:
         open_db()
@@ -156,22 +172,26 @@ def apiv1_get_ws(worksheet_id):
         cursor.execute(sql_query)
         data = cursor.fetchall()
         for row in data:
-            myList.append([row[0], row[1], row[2], row[3]])
-
+            rowList = []
+            for a in row:
+                rowList.append(a)
+            myList.append(rowList)
         close_db()
         reply = {'status': 'OK', 'results': myList}
-    except:
-        reply = {'status': 'FAIL', 'results': "The Application server is OK, but is unable to show records from database {0}!".format(db_name)}
-    
-    write_log("{0} - {1}".format(reply['status'], reply['results']))
-    return jsonify(reply)
+        # print myList
+    except ValueError:
+        reply = {'status': 'FAIL', 'results': "E1000: The Application server is OK, but is unable to show records from database {0}!".format(db_name)}
+
+    #write_log("{0} - {1}".format(data['status'], reply['results']))
+    return reply
 
 @app.route('/api/v1/worksheet_save')
 def apiv1_worksheet_save():
     #functionName = "def apiv1_worksheet_save():"
     request.get_data()
 
-    reply = {'status': 'OK', 'results': myList}    
+    reply = {'status': 'OK', 'results': myList}   
+    reply = {'general': reply} 
     return jsonify(reply)
 
 def open_mysql():
@@ -236,6 +256,7 @@ def edit_job(job_id):
         reply = {'status': 'FAIL', 'results': "The Application server is OK, but is unable to show records from database {0}!".format(db_name)}
 
     write_log("{0} - {1}".format(reply['status'], reply['results']))
+    reply = {'general': reply}
     return jsonify(reply)
 
 

@@ -47,11 +47,12 @@ def write_log(entry):
 def basic_render(data_url, page_header, rendering_file, form_data):
     if data_url != "":
         data = open_url(data_url)
-
+        # print "Data: {}".format(data)
+        # print "General: {}".format(general)
         if data['result'] == 0:
             return data['data']
         else:
-            records = data['data']
+            records = data['data']['general']['results']
     else:
         records = []
 
@@ -106,44 +107,33 @@ def add_ws(project_id):
         if data['result'] == 0:
             return data['data']
         else:
-            worksheet_id = data['data']
+            print data
+            new_worksheet = data['data']['general']['results'][0][0]
 
-    # Worksheet id that was just created
-    new_worksheet = worksheet_id[0][0]
+    # # Worksheet id that was just created
+    # new_worksheet = worksheet_id[0][0]
 
     # print ("Created worksheet: {}".format(worksheet_id[0][0]))
     return edit_ws(new_worksheet)
 
 @app.route('/edit_ws/<worksheet_id>/')
 def edit_ws(worksheet_id):
-    # print ("In Edit Worksheet")
-    #Need a call to get a worksheet added to this.
+
     data_url = '{0}/get_ws/{1}/'.format(url_base, worksheet_id)
-
-    if data_url != "":
-        try:
-            data = open_url(data_url)
-            print ("In Edit Worksheet data: {}".format(data))
-            if data['result'] == 0:
-                return data['data']
-            else:
-                form_data = data['data']
-        except Exception as e:
-            # print e
-            return {'result':0, 'data':render_error_screen(e)}
-
-    print ("Form Data: {}".format(form_data))
-    # Change the following to get info from the worksheet
-    write_log(data)
-    data_url = '{0}/get_worksheet/'.format(url_base)
     rendering_file = 'edit_ws.html'
     page_header = "{}".format(worksheet_id)
 
-    worksheet_data = None
-    resources = [["Cody", 9], ["David", 4], ["Kerry", 10]]
-    materials = [["Logs", 34.86], ["Dirt", 254.50], ["Stuff and Stuff", 389.75]]
+    try:
+        data = open_url(data_url)
+        if data['result'] == 0:
+            return data['data']
+        else:
+            all_data = data['data']
+    except Exception as e:
+        # print e
+        return {'result':0, 'data':render_error_screen(e)}
     
-    form_data = {"project_name": form_data[0][0], "worksheet_id":worksheet_id, "date":"15/5/2017", "resources":resources, "materials":materials}
+    form_data = {"project_name": all_data['general']['results'][0][0], "worksheet_id":worksheet_id, "date":all_data['general']['results'][0][1], "resources":all_data['resources']['results'], "materials":all_data['materials']['results']}
 
     html = document_header()
     html += render_template(rendering_file, url_base = url_base, page_header = page_header, theme = theme, theme_cancel=theme_cancel, form_data=form_data )
@@ -217,34 +207,30 @@ def get_style_link():
 def open_url(url):
     try: 
         result = requests.get(url)
+        # print ("In open url 1")
+
     except:
         error = "Application Server Failure: Not able to communicate with Application Server at {0} ".format(app_addr)
         return {'result':0, 'data':render_error_screen(error)}
 
+    decoded_json = json.loads(result.text)
     if (result.status_code == 200):
-        decoded_json = json.loads(result.text)
-        if decoded_json['status']== 'FAIL':
+        # print ("In open url 2")
+        if decoded_json['general']['status'] == 'FAIL':
+            # print ("In open url 3")
             error = "Database Failure: Response from Application Server: " + decoded_json['results']
             return {'result':0, 'data':render_error_screen(error)}
 
-        if len(decoded_json['results']) == 0:
+        if len(decoded_json['general']['results']) == 0:
+            # print ("In open url 4")
             error = "Response from Application Server: No records found."
             return {'result':0, 'data':render_error_screen(error)}
 
     else:   
-        decoded_json = json.loads(result.text)
         error = "Some wierd error."
         return {'result':0, 'data':render_error_screen(error)}
-
-    # Need to check if there was another error.  Will have to look at the other web page to find what it's doing.
-    # if 0 == 1:
-    #     pass
-    # else:   
-    #     error = "Application Server Failure: We did not receive a proper response from the application server.  Status Code != 200: " + result.text
-    #     return render_error_screen(error)
-
-
-    return {'result':1, 'data':decoded_json['results']}
+    
+    return {'result':1, 'data':decoded_json}
 
 @app.route('/login', methods=['GET'])
 def login_get():
