@@ -253,8 +253,9 @@ def new_job():
     :return: html pages as rendered html
     """
 
-    html = base_menu()
+    html = document_header()
     html += render_template('enter_new_job.html')
+    html += document_footer()
     return html
 
 @app.route('/add_new_job', methods=['POST'])
