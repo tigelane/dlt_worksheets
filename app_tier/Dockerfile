@@ -31,6 +31,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install vim
 # App Install   #
 #################
 CMD mkdir /usr/local/brimstone
+# Executable -----------------
 ADD brimstone_app.py /usr/local/brimstone/
 
 #################
