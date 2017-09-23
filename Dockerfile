@@ -24,14 +24,13 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install vim
 #################
 # App install 
 #################
-CMD mkdir /usr/local/brimstone
-CMD mkdir /usr/local/brimstone/static/
-CMD mkdir /usr/local/brimstone/templates/
+RUN mkdir -p /usr/local/brimstone/static
+RUN mkdir -p /usr/local/brimstone/templates
 
 # Executable -----------------
-ADD brimstone_web.py /usr/local/brimstone
-ADD static /usr/local/brimstone/static/
-ADD templates /usr/local/brimstone/templates/
+ADD brimstone_web.py /usr/local/brimstone/
+ADD static /usr/local/brimstone/static
+ADD templates /usr/local/brimstone/templates
 
 #################
 # App Options 
