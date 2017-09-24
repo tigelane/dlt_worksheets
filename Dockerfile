@@ -28,7 +28,7 @@ RUN mkdir -p /usr/local/brimstone/static
 RUN mkdir -p /usr/local/brimstone/templates
 
 # Executable -----------------
-ADD brimstone_web.py /usr/local/brimstone/
+ADD dlt_web.py /usr/local/brimstone/
 ADD static /usr/local/brimstone/static
 ADD templates /usr/local/brimstone/templates
 
@@ -39,5 +39,5 @@ ADD templates /usr/local/brimstone/templates
 WORKDIR /usr/local/brimstone
 
 # By default when this container runs, simply start the application
-# CMD /usr/local/brimstone/brimstone_web.py
-CMD /usr/local/brimstone/brimstone_web.py
+# CMD /usr/local/brimstone/dlt_web.py
+CMD /usr/local/brimstone/dlt_web.py

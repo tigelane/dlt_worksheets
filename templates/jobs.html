@@ -1,0 +1,26 @@
+<body>
+<!-- Apply the "d" theme from the themeroller to the page -->
+    <div data-role="page" data-theme={{theme}}>
+        <div data-role="header" style="overflow:hidden;" data-theme={{theme}}>
+            <h1>{{page_header}}</h1>
+            <a href="/enter_key" data-icon="gear" class="ui-btn-right" data-rel="dialog" data-transition="slidedown">Options</a>
+            <div data-role="navbar" data-theme={{theme}}>
+                <ul>
+                    <li><a href="new_job" data-rel="dialog" data-transition="slidedown">New Job</a></li>
+                    <!-- <li><a href="select_ws_open" data-rel="dialog" data-transition="slidedown">Edit job stuff</a></li> -->
+                </ul>
+            </div><!-- /navbar -->
+        </div><!-- /header -->
+
+
+    <div data-role="content" data-theme={{theme}}>
+        <p></p>
+        <ul data-role="listview" data-filter="true" data-filter-placeholder="Search jobs..." data-inset="true">
+
+        {% for record in records %}
+        <!-- Create a list for the records passed to the page. -->
+        <li><a href="/edit_job/{{ record[0] }}/">Job: {{ record[1] }}          Customer: {{ record[2] }}</a></li>
+        {% endfor %}
+
+    </ul>
+    </div><!-- /content -->

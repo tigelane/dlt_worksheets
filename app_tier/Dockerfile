@@ -32,7 +32,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install vim
 #################
 CMD mkdir /usr/local/brimstone
 # Executable -----------------
-ADD brimstone_app.py /usr/local/brimstone/
+ADD dlt_app.py /usr/local/brimstone/
 
 #################
 # App Options 
@@ -41,4 +41,4 @@ ADD brimstone_app.py /usr/local/brimstone/
 WORKDIR /usr/local/brimstone
 
 # By default when this container runs, simply start the application
-CMD /usr/local/brimstone/brimstone_app.py
+CMD /usr/local/brimstone/dlt_app.py
