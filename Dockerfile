@@ -7,8 +7,8 @@ MAINTAINER Tige Phillips <tige@tigelane.com>
 # Port to access the Flask application on - change if needed.
 EXPOSE 80
 
-RUN apt-get update ;\
-    apt-get -y upgrade
+# RUN apt-get update ;\
+#     apt-get -y upgrade
 
 ####################
 # PYTHON and TOOLS #

@@ -20,8 +20,9 @@ db_addr = os.getenv('SQL_SERVER_IPADDR', 'localhost')
 
 sql_ws_all = 'SELECT worksheets.id, jobs.name, worksheets.date_open, worksheets.notes, status.status FROM worksheets JOIN jobs ON jobs.id = worksheets.jobs_id JOIN status ON worksheets.status_id = status.id WHERE status.status IS NOT NULL;'
 sql_ws_open = 'SELECT worksheets.id, jobs.name, worksheets.date_open, worksheets.notes, status.status FROM worksheets JOIN jobs ON jobs.id = worksheets.jobs_id JOIN status ON worksheets.status_id = status.id WHERE status.status = "Open";'
-sql_jobs_all = 'SELECT jobs.name, customers.name, jobs.notes, status.status FROM jobs JOIN customers ON jobs.customer_id = customers.id JOIN status ON jobs.status_id = status.id WHERE status.status IS NOT NULL;'
+sql_jobs_all = 'SELECT jobs.name, customers.name, jobs.notes, status.status FROM jobs JOIN customers ON jobs.customer_id = customers.id JOIN status ON jobs.status_id = status.id;'
 sql_jobs_open = 'SELECT jobs.id, jobs.name, customers.name, jobs.notes, status.status FROM jobs JOIN customers ON jobs.customer_id = customers.id JOIN status ON jobs.status_id = status.id WHERE status.status = "Open";'
+edit_job_sql_query = 'SELECT jobs.id, jobs.name, customers.name, jobs.notes, status.status FROM jobs JOIN customers ON jobs.customer_id = customers.id JOIN status ON jobs.status_id = status.id WHERE status.status = "Open";'
 
 # This application will run on the following TCP port
 app_port = 5000
@@ -70,8 +71,8 @@ def apiv1_show_jobs(status):
         sql_query = sql_jobs_all
         write_log("Jobs request - All")
     elif status == 'open':
-        write_log("Jobs request - Open")
         sql_query = sql_jobs_open
+        write_log("Jobs request - Open")
 
     try:
         open_db()
@@ -144,6 +145,47 @@ def apiv1_add_ws(project_id):
     write_log("{0} - {1}".format(reply['status'], reply['results']))
     reply = {'general': reply}
     return jsonify(reply)
+
+@app.route('/api/v1/add_job/')
+def apiv1_add_job():
+
+    date_open = datetime.date.today().strftime("%Y-%m-%d")
+    sql_query_add = 'INSERT INTO jobs (status_id, date_open) VALUES (1, "{0}");'.format(date_open)
+    sql_query_get_last = 'SELECT LAST_INSERT_ID();'
+
+    write_log("Adding Job with command: {}".format(sql_query_add))
+
+    try:
+        open_db()
+        cursor = db.cursor()
+        cursor.execute(sql_query_add)
+        db.commit()
+
+        cursor.execute(sql_query_get_last)
+        myData = cursor.fetchall()
+
+        # Maybe check for errors here later
+        close_db()
+        reply = {'status': 'OK', 'results': myData}
+
+    except:
+        reply = {'status': 'FAIL', 'results': "The Application server is OK, but is unable to show records from database {0}!".format(db_name)}
+    
+    write_log("{0} - {1}".format(reply['status'], reply['results']))
+    reply = {'general': reply}
+    return jsonify(reply)
+
+@app.route('/api/v1/edit_job/<this_id>/')
+def apiv1_edit_job(this_id):
+
+    # return:
+    #     form_data = {"project_name": form_data[0][0], "worksheet_id":worksheet_id, "date":"15/5/2017", "resources":resources, "materials":materials}
+
+    sql_query = 'SELECT jobs.name, jobs.date_open, jobs.date_close, jobs.notes, status.status FROM jobs JOIN status ON jobs.status_id = status.id WHERE jobs.id = {};'.format(this_id)
+    general = get_from_db(sql_query)
+
+    all_info = {'general': general, 'resources': [], 'materials':[]}
+    return jsonify(all_info)
 
 @app.route('/api/v1/get_ws/<worksheet_id>/')
 def apiv1_get_ws(worksheet_id):
@@ -233,32 +275,6 @@ def close_db():
     global db
     # disconnect from server
     db.close()
-
-
-@app.route('/edit_job/<job_id>/')
-def edit_job(job_id):
-
-    sql_query = "{0}{1};".format(edit_job_sql_query, job_id)
-    ''' Get all of the records and return them as a list of dictonarys'''
-    myList = []
-    
-    try:
-        open_db()
-        cursor = db.cursor()
-        cursor.execute(sql_query)
-        data = cursor.fetchall()
-        for row in data:
-            myList.append([row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9],row[10], row[11], row[12], row[13], row[14], row[15]])
-
-        close_db()
-        reply = {'status': 'OK', 'results': myList}
-    except:
-        reply = {'status': 'FAIL', 'results': "The Application server is OK, but is unable to show records from database {0}!".format(db_name)}
-
-    write_log("{0} - {1}".format(reply['status'], reply['results']))
-    reply = {'general': reply}
-    return jsonify(reply)
-
 
 @app.route('/add_row')
 def add_row(text, date, name):

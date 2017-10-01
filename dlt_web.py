@@ -62,11 +62,15 @@ def basic_render(data_url, page_header, rendering_file, form_data):
 
     return html
 
+@app.route('/index')
+def index():
+    return default()
+
 @app.route('/')
 def default():
 
     rendering_file = 'index.html'
-    page_header = "DLT Daily Worksheets"
+    page_header = "David Linn Trucking"
 
     return basic_render(data_url, page_header, rendering_file, form_data)
 
@@ -76,6 +80,14 @@ def jobs():
     data_url = '{0}/show_jobs/open/'.format(url_base)
     rendering_file = 'jobs.html'
     page_header = "DLT Job Home"
+
+    return basic_render(data_url, page_header, rendering_file, form_data)
+
+@app.route('/worksheets')
+def worksheets():
+
+    rendering_file = 'worksheets.html'
+    page_header = "DLT Daily Worksheets"
 
     return basic_render(data_url, page_header, rendering_file, form_data)
 
@@ -116,7 +128,7 @@ def add_ws(project_id):
         if data['result'] == 0:
             return data['data']
         else:
-            print data
+            # print data
             new_worksheet = data['data']['general']['results'][0][0]
 
     return edit_ws(new_worksheet)
@@ -146,7 +158,7 @@ def edit_ws(worksheet_id):
 
     return html
 
-@app.route('/save_ws', methods=['post'])
+@app.route('/save_ws', methods=['POST'])
 def save_ws():
 
     worksheet_id = request.form["worksheet_id"]
@@ -166,6 +178,61 @@ def save_ws():
         return redirect('/', code=303)
     else:
         return redirect('/edit_ws/{0}/'.format(worksheet_id), code=303)
+
+@app.route('/add_job')
+def add_job():
+    """
+    Need to make a call to create a new job, then open the dit jobs page with that new job.
+    :return: html pages as rendered html
+    """
+
+    data_url = '{0}/add_job'.format(url_base)
+
+    if data_url != "":
+        data = open_url(data_url)
+
+        if data['result'] == 0:
+            return data['data']
+        else:
+            print data
+            id = data['data']['general']['results'][0][0]
+
+    return edit_job(id)
+
+@app.route('/edit_job/<job_id>/')
+def edit_job(job_id):
+    
+    data_url = '{0}/edit_job/{1}/'.format(url_base, job_id)
+    rendering_file = 'edit_job.html'
+    page_header = "DLT Edit a Job"
+
+    return basic_render(data_url, page_header, rendering_file, form_data)
+
+@app.route('/save_job', methods=['POST'])
+def save_job():
+    """
+    Gather data from form post and post information to database
+    :return: html pages as rendered html
+    """
+    if request.form["button"] == "cancel":
+        return redirect('/jobs', code=303)
+
+    formValues = {}
+    formValues["hco"] = request.form['hco']
+    formValues["janme"] = request.form['janme']
+    formValues["loc"] = request.form['loc']
+
+    #  Look for missing items and show an error screen if needed
+    for k, v in formValues.iteritems():
+        if v == "":
+            return render_error_screen("You must specify all of the '*' values.")
+
+    # Add the rest to values that are optional
+    formValues["sdate"] = request.form['sdate']
+    formValues["epay"] = request.form['epay']
+    
+    # Need to write info to the system
+    return redirect('/server_info', code=303)
 
 def document_header():
     """
@@ -250,53 +317,6 @@ def login_post():
     session['username'] = str(request.form['username'])
     session['password'] = str(request.form['password'])
     return redirect('/server_info', code=303)
-
-@app.route('/new_job', methods=['GET'])
-def new_job():
-    """
-    Render entry page for a new job
-    :return: html pages as rendered html
-    """
-
-    html = document_header()
-    html += render_template('enter_new_job.html')
-    html += document_footer()
-    return html
-
-@app.route('/add_new_job', methods=['POST'])
-def add_new_job():
-    """
-    Gather data from form post and post information to database
-    :return: html pages as rendered html
-    """
-    if request.form["button"] == "cancel":
-        return redirect('/server_info', code=303)
-
-    formValues = {}
-    formValues["hco"] = request.form['hco']
-    formValues["ttype"] = request.form['ttype']
-    formValues["loc"] = request.form['loc']
-
-    #  Look for missing items and show an error screen if needed
-    for k, v in formValues.iteritems():
-        if v == "":
-            return render_error_screen("You must specify all of the '*' values.")
-
-    # Add the rest to values that are optional
-    formValues["sdate"] = request.form['sdate']
-    formValues["epay"] = request.form['epay']
-    
-    print formValues
-    return redirect('/server_info', code=303)
-
-@app.route('/edit_job/<job_id>/')
-def edit_job(job_id):
-    
-    data_url = '{0}/edit_job/{1}/'.format(url_base, job_id)
-    rendering_file = 'edit_job.html'
-    page_header = "DLT Edit a Job"
-
-    return basic_render(data_url, page_header, rendering_file, form_data)
 
 @app.route('/new_gadget', methods=['GET'])
 def new_gadget():
@@ -530,16 +550,11 @@ def search_contract_post():
                                     dlistPort = prot + ':' + dFromPort + '-' + dToPort
                                 CONTRACTS.filters[contract.name].append(filter_name + ' (' + dlistPort + ')')
 
-
     # Render HTML
     html = table_header()
     html += render_template('search_contract_post.html', CONTRACTS=CONTRACTS)
     html += table_footer()
     return html
-
-
-
-
 
 
 if __name__ == '__main__':

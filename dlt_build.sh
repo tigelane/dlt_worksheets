@@ -31,21 +31,30 @@ function build_containers() {
     docker build $CACHE -t tigelane/brimstone_app .
 }
 
+function not_used() {
+    WEB="dlt_web"
+    IPADDRESS="192.168.55.115"
+    docker run --rm --name $WEB -v /Users/tige/Documents/Development/dlt_worksheets:/opt/brimstone -e APP_SERVER_IPADDR=$IPADDRESS -p 80:80 -ti tigelane/brimstone_web bash
+
+    APP="dlt_app"
+    IPADDRESS="192.168.55.115"
+    docker run --rm --name $APP -v /Users/tige/Documents/Development/dlt_worksheets/app_tier:/opt/brimstone -e SQL_SERVER_IPADDR=$IPADDRESS -p 5000:5000 -ti tigelane/brimstone_app bash
+
+    docker run --rm --name $JENKINS -p 8080:8080 -p 50000:50000 -v /Users/tige/Documents/Development/Jenkins:/var/jenkins_home jenkins
+}
 # Start all of the containers
 function start_containers() {
     # Stop the containers if they are already running
     stop
+    
     # Run
     printf "\n\nStarting containers:\n"
     docker run --rm --name $WEB -v /Users/tige/Documents/Development/dlt_worksheets:/opt/brimstone -e APP_SERVER_IPADDR=$IPADDRESS -p 80:80 -d tigelane/brimstone_web /opt/brimstone/$WEB.py
-    # docker run  -e APP_SERVER_IPADDR=192.168.55.115 -p 80:80 -d tigelane/brimstone_web
 
     docker run --rm --name $APP -v /Users/tige/Documents/Development/dlt_worksheets/app_tier:/opt/brimstone -e SQL_SERVER_IPADDR=$IPADDRESS -p 5000:5000 -d tigelane/brimstone_app /opt/brimstone/$APP.py
 
     #### Run the DB
     docker run --rm --name $DB -e MYSQL_ROOT_PASSWORD=H2xE6h6Bo9cgsnkiUhW076Qf -v /Users/tige/Documents/Development/dlt_worksheets/mysql:/var/lib/mysql -p 3306:3306 -d mysql
-
-    # docker run --rm --name $JENKINS -p 8080:8080 -p 50000:50000 -v /Users/tige/Documents/Development/Jenkins:/var/jenkins_home jenkins
 
     #### Print some info
     printf "\n\nRunning containers:\n"
@@ -65,7 +74,7 @@ function stop()
 }
 
 # Extract options and their arguments into variables.
-while getopts "bchrsi:" opt; do
+while getopts "cbhrsi:" opt; do
   case $opt in
     c)
         CACHE="--no-cache"
@@ -78,9 +87,7 @@ while getopts "bchrsi:" opt; do
         exit 1 
         ;;
     i)
-        echo "i Triggered $OPTARG" >&2
         IPADDRESS=$OPTARG >&2
-        echo IP Address is: $IPADDRESS
         ;;
     r)
         start_containers

@@ -3,89 +3,86 @@
 
 <div data-role="page" data-theme={{theme}}>
 
-<form action="/save_ws" method="post">
-<input type="hidden" name="worksheet_id" value={{form_data["worksheet_id"]}} />
+<form action="/save_job" method="post">
+<input type="hidden" name="this_id" value={{form_data["this_id"]}} />
 
 
 <div data-role="header" style="overflow:hidden;" data-theme={{theme}}>
-    <h1>Project: {{form_data["project_name"]}} &ensp;-&ensp; Worksheet date: {{form_data["date"]}}</h1>
+    <h1>Job Name: {{form_data["job_name"]}} &ensp;-&ensp; Open date: {{form_data["date"]}}</h1>
 
 
-    <button type="submit" name="close" value= "close" class="ui-shadow ui-icon-delete ui-btn-icon-left ui-btn ui-btn-left ui-corner-all ui-mini">Cancel/Close</button>
-    <button type="submit" name="save" value="save" class="ui-shadow ui-icon-check ui-btn-icon-right ui-btn ui-btn-right ui-corner-all ui-mini">Save</button>
-
+<!--     <button type="cancel" name="close" value= "cancel" class="ui-shadow ui-icon-delete ui-btn-icon-top  ui-btn-b ui-corner-all ui-mini">Cancel/Close</button>
+ -->    
+    <!-- <button type="cancel" name="close" value= "close" class="ui-shadow ui-icon-delete ui-btn-icon-left ui-btn ui-corner-all ui-mini">Cancel/Close</button> -->
+    
+<!--     <button type="submit" name="save" value="save" class="ui-shadow ui-icon-check ui-btn-icon-right ui-btn ui-btn-right ui-corner-all ui-mini">Save</button>
+ -->
     <div data-role="navbar" data-theme={{theme}}>
 
-        <ul>
+<!--         <ul>
             <li><a href="/add_resource/{{form_data["worksheet_id"]}}" data-rel="dialog" data-transition="slidedown">Add Resource</a></li>
             <li><a href="/add_material/{{form_data["worksheet_id"]}}" data-rel="dialog" data-transition="slidedown">Add Material</a></li>
         </ul>
-    </div><!-- /navbar -->
+ -->    </div><!-- /navbar -->
 </div><!-- /header -->
 
-<div data-role="content" data-theme={{theme}}>   
-
-        <div data-role="fieldcontain">
-            <label for="flip-checkbox-2">Worksheet Open:</label>
-            <input type="checkbox" data-role="flipswitch" name="ws_status" id="ws_status" data-on-text="Yes" data-off-text="No" data-wrapper-class="custom-size-flipswitch" checked="">
-        </div>
-
-        <div data-role="fieldcontain">
-            <label for="notes">Notes:</label>
-            <textarea name="notes" id="notes"></textarea>
-        </div>
-
-
-    <!--   Old Submit button
-    <label for="submit-6">Send:</label>
-    <button type="submit" id="submit-6" class="ui-shadow ui-btn ui-corner-all ui-mini">Submit</button>
-    -->
-
-    </form>
-
-    <table data-role="table" id="resources_table" data-mode="columntoggle" class="ui-body-{{theme}} ui-shadow table-stripe ui-responsive" data-column-btn-theme={{theme}} data-column-btn-text="Columns..." data-column-popup-theme={{theme}}>
-    <thead>
-        <tr class="ui-bar-d">
-            <th data-priority="1">Resource</th>
-            <th data-priority="1">Hours</th>
-            <th data-priority="3">Edit</th>
-            </tr>
-    </thead>
-    <tbody>
-        {% for record in form_data["resources"] %}
-        <tr>
-            <th>{{ record[0] }}</th>
-            <td>{{ record[1] }}</td>
-            <td><a href="" class="ui-btn ui-icon-gear ui-btn-icon-notext ui-corner-all" data-rel="dialog" data-transition="flip"></a></td>
-        </tr>
-        {% endfor %}
-    </tbody>
-    </table>
-
-    <p></p>
-
-    <table data-role="table" id="materials_table" data-mode="columntoggle" class="ui-body-{{theme}} ui-shadow table-stripe ui-responsive" data-column-btn-theme={{theme}} data-column-btn-text="Columns..." data-column-popup-theme={{theme}}>
-    <thead>
-    <tr class="ui-bar-{{theme}}">
-            <th data-priority="1">Materials</th>
-            <th data-priority="1">Price</th>
-            <th data-priority="3">Edit</th>
-            </tr>
-        </thead>
-    <tbody>
-        {% for record in form_data["materials"] %}
-        <tr>
-            <th>{{ record[0] }}</th>
-            <td>{{ record[1] }}</td>
-            <td><a href="" class="ui-btn ui-icon-gear ui-btn-icon-notext ui-corner-all" data-rel="dialog" data-transition="flip"></a></td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<!--
-<a href="index.html"  class="ui-mini ui-btn ui-btn-{{theme_cancel}} ui-icon-delete ui-btn-icon-top ui-corner-all" >Cancel</a>
--->
-    </div><!-- /content -->
-    </div><!-- /page -->
+<!-- <body> -->
+    <div class="container">
+    <!-- <h2>Enter Job Details:</h2> -->
+        <form class="form-horizontal" value="form" action="/save_job" method="POST">
+          <div class="form-group">
+            <label class="control-label col-sm-2" for="hco">Customer Name *:</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" name="hco" id="hco" placeholder="Company Name">
+            </div>
+          </div>
+          <p>
+          <div class="form-group">
+            <label class="control-label col-sm-2" for="janme">Job Name *:</label>
+            <div class="col-sm-10"> 
+              <input type="text" class="form-control" name="janme" id="janme" placeholder="Job name and description">
+            </div>
+          </div>
+          </p>
+          <p>
+          <div class="form-group">
+            <label class="control-label col-sm-2" for="sdate">Start Date:</label>
+            <div class="col-sm-10"> 
+              <input type="text" class="form-control" name="sdate" id="sdate" placeholder="Start date">
+            </div>
+          </div>
+          </p>
+          <p>
+          <div class="form-group">
+            <label class="control-label col-sm-2" for="sdate">End Date:</label>
+            <div class="col-sm-10"> 
+              <input type="text" class="form-control" name="edate" id="sdate" placeholder="Start date">
+            </div>
+          </div>
+          </p>
+          <p>
+          <div class="form-group">
+            <label class="control-label col-sm-2" for="loc">Location *:</label>
+            <div class="col-sm-10"> 
+              <input type="text" class="form-control" name="loc" id="loc" placeholder="City and State">
+            </div>
+          </div>
+          </p>
+          <p>
+          <div class="form-group">
+            <label class="control-label col-sm-2" for="epay">Estimated Pay:</label>
+            <div class="col-sm-10"> 
+              <input type="text" class="form-control" name="epay" id="epay" placeholder="Calculated or fixed">
+            </div>
+          </div>
+          </p>
+          <p>
+          <div class="form-group"> 
+            <div class="col-sm-offset-2 col-sm-10">
+              <button type="cancel" class="btn btn-default ui-btn-{{theme_cancel}}" name="button" value="cancel">Cancel</button>
+              <button type="submit" class="btn btn-default" name="button" value="save">Save</button>
+            </div>
+          </div>
+        </form>
+    </div>
 </body>

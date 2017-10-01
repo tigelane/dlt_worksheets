@@ -54,6 +54,8 @@ CREATE TABLE jobs (
     id INTEGER PRIMARY KEY AUTO_INCREMENT, 
     name TEXT,
     customer_id INTEGER,
+    date_open DATE,
+    date_close DATE,
     status_id INTEGER,
     notes TEXT
 );
@@ -62,6 +64,7 @@ CREATE TABLE worksheets (
     id INTEGER PRIMARY KEY AUTO_INCREMENT, 
     jobs_id TEXT,
     date_open DATE,
+    date_close DATE,
     status_id INTEGER,
     notes TEXT
 );
