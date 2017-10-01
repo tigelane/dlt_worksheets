@@ -47,8 +47,6 @@ def write_log(entry):
 def basic_render(data_url, page_header, rendering_file, form_data):
     if data_url != "":
         data = open_url(data_url)
-        # print "Data: {}".format(data)
-        # print "General: {}".format(general)
         if data['result'] == 0:
             return data['data']
         else:
@@ -61,6 +59,45 @@ def basic_render(data_url, page_header, rendering_file, form_data):
     html += document_footer()
 
     return html
+
+@app.route('/edit_job/<job_id>/')
+def edit_job(job_id):
+    
+    data_url = '{0}/edit_job/{1}/'.format(url_base, job_id)
+    rendering_file = 'edit_job.html'
+    page_header = "DLT Edit a Job"
+
+    return basic_render(data_url, page_header, rendering_file, form_data)
+
+@app.route('/save_job', methods=['POST'])
+def save_job():
+    """
+    Gather data from form post and post information to database
+    :return: html pages as rendered html
+    """
+    if request.form["button"] == "cancel":
+        return redirect('/jobs', code=303)
+
+    formValues = {}
+    formValues["hco"] = request.form['hco']
+    formValues["janme"] = request.form['janme']
+    formValues["loc"] = request.form['loc']
+
+    #  Look for missing items and show an error screen if needed
+    for k, v in formValues.iteritems():
+        if v == "":
+            return render_error_screen("You must specify all of the '*' values.")
+
+    # Add the rest to values that are optional
+    formValues["sdate"] = request.form['sdate']
+    formValues["epay"] = request.form['epay']
+    
+
+    print (formValues)
+    # Need to write info to the app server
+
+
+    return redirect('/server_info', code=303)
 
 @app.route('/index')
 def index():
@@ -198,45 +235,6 @@ def add_job():
             id = data['data']['general']['results'][0][0]
 
     return edit_job(id)
-
-@app.route('/edit_job/<job_id>/')
-def edit_job(job_id):
-    
-    data_url = '{0}/edit_job/{1}/'.format(url_base, job_id)
-    rendering_file = 'edit_job.html'
-    page_header = "DLT Edit a Job"
-
-    return basic_render(data_url, page_header, rendering_file, form_data)
-
-@app.route('/save_job', methods=['POST'])
-def save_job():
-    """
-    Gather data from form post and post information to database
-    :return: html pages as rendered html
-    """
-    if request.form["button"] == "cancel":
-        return redirect('/jobs', code=303)
-
-    formValues = {}
-    formValues["hco"] = request.form['hco']
-    formValues["janme"] = request.form['janme']
-    formValues["loc"] = request.form['loc']
-
-    #  Look for missing items and show an error screen if needed
-    for k, v in formValues.iteritems():
-        if v == "":
-            return render_error_screen("You must specify all of the '*' values.")
-
-    # Add the rest to values that are optional
-    formValues["sdate"] = request.form['sdate']
-    formValues["epay"] = request.form['epay']
-    
-
-    print (formValues)
-    # Need to write info to the app server
-
-
-    return redirect('/server_info', code=303)
 
 def document_header():
     """

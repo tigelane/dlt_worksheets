@@ -181,10 +181,11 @@ def apiv1_edit_job(this_id):
     # return:
     #     form_data = {"project_name": form_data[0][0], "worksheet_id":worksheet_id, "date":"15/5/2017", "resources":resources, "materials":materials}
 
-    sql_query = 'SELECT jobs.name, jobs.date_open, jobs.date_close, jobs.notes, status.status FROM jobs JOIN status ON jobs.status_id = status.id WHERE jobs.id = {};'.format(this_id)
+    sql_query = 'SELECT customers.id, customers.name, jobs.name, jobs.date_open, jobs.date_close, jobs.notes, status.status FROM jobs JOIN customers ON jobs.customer_id = customers.id JOIN status ON jobs.status_id = status.id WHERE jobs.id = {};'.format(this_id)
     general = get_from_db(sql_query)
 
     all_info = {'general': general, 'resources': [], 'materials':[]}
+    print (all_info)
     return jsonify(all_info)
 
 @app.route('/api/v1/write_job/<this_id>/')
