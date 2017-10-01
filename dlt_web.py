@@ -231,7 +231,11 @@ def save_job():
     formValues["sdate"] = request.form['sdate']
     formValues["epay"] = request.form['epay']
     
-    # Need to write info to the system
+
+    print (formValues)
+    # Need to write info to the app server
+
+
     return redirect('/server_info', code=303)
 
 def document_header():

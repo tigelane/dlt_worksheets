@@ -34,10 +34,12 @@ function build_containers() {
 function not_used() {
     WEB="dlt_web"
     IPADDRESS="192.168.55.115"
+    docker stop $WEB
     docker run --rm --name $WEB -v /Users/tige/Documents/Development/dlt_worksheets:/opt/brimstone -e APP_SERVER_IPADDR=$IPADDRESS -p 80:80 -ti tigelane/brimstone_web bash
 
     APP="dlt_app"
     IPADDRESS="192.168.55.115"
+    docker stop $APP
     docker run --rm --name $APP -v /Users/tige/Documents/Development/dlt_worksheets/app_tier:/opt/brimstone -e SQL_SERVER_IPADDR=$IPADDRESS -p 5000:5000 -ti tigelane/brimstone_app bash
 
     docker run --rm --name $JENKINS -p 8080:8080 -p 50000:50000 -v /Users/tige/Documents/Development/Jenkins:/var/jenkins_home jenkins

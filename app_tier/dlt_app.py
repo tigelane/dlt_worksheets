@@ -187,6 +187,11 @@ def apiv1_edit_job(this_id):
     all_info = {'general': general, 'resources': [], 'materials':[]}
     return jsonify(all_info)
 
+@app.route('/api/v1/write_job/<this_id>/')
+def apiv1_write_job(this_id):
+    pass
+
+
 @app.route('/api/v1/get_ws/<worksheet_id>/')
 def apiv1_get_ws(worksheet_id):
     # return:
