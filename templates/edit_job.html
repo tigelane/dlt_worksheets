@@ -31,16 +31,21 @@
     <!-- <h2>Enter Job Details:</h2> -->
         <form class="form-horizontal" value="form" action="/save_job" method="POST">
           <div class="form-group">
-            <label class="control-label col-sm-2" for="hco">Customer Name *:</label>
+            <label class="control-label col-sm-2" for="cname">Customer Name *:</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" name="hco" id="hco" placeholder="Company Name">
+              <select>
+    <option value="" disabled="disabled" selected="selected">Please select a customer</option>
+    <option value="1">One</option>
+    <option value="2">Two</option>
+</select>
+
             </div>
           </div>
           <p>
           <div class="form-group">
-            <label class="control-label col-sm-2" for="janme">Job Name *:</label>
+            <label class="control-label col-sm-2" for="jname">Job Name *:</label>
             <div class="col-sm-10"> 
-              <input type="text" class="form-control" name="janme" id="janme" placeholder="Job name and description">
+              <input type="text" class="form-control" name="jname" id="jname" placeholder="Job name and description">
             </div>
           </div>
           </p>
