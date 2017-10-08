@@ -1,5 +1,5 @@
 
-<body> 
+<body>
 
 <div data-role="page" data-theme={{theme}}>
 
@@ -8,13 +8,13 @@
 
 
 <div data-role="header" style="overflow:hidden;" data-theme={{theme}}>
-    <h1>Job Name: {{form_data["job_name"]}} &ensp;-&ensp; Open date: {{form_data["date"]}}</h1>
+    <h1>Customer: {{records[0][1]}}</h1>
 
 
 <!--     <button type="cancel" name="close" value= "cancel" class="ui-shadow ui-icon-delete ui-btn-icon-top  ui-btn-b ui-corner-all ui-mini">Cancel/Close</button>
- -->    
+ -->
     <!-- <button type="cancel" name="close" value= "close" class="ui-shadow ui-icon-delete ui-btn-icon-left ui-btn ui-corner-all ui-mini">Cancel/Close</button> -->
-    
+
 <!--     <button type="submit" name="save" value="save" class="ui-shadow ui-icon-check ui-btn-icon-right ui-btn ui-btn-right ui-corner-all ui-mini">Save</button>
  -->
     <div data-role="navbar" data-theme={{theme}}>
@@ -30,60 +30,48 @@
     <div class="container">
     <!-- <h2>Enter Job Details:</h2> -->
         <form class="form-horizontal" value="form" action="/save_job" method="POST">
-          <div class="form-group">
-            <label class="control-label col-sm-2" for="cname">Customer Name *:</label>
-            <div class="col-sm-10">
-              <select>
-                <option value="" disabled="disabled" selected="selected">Please select a customer</option>
-                {% for record in records %}
-                  <option value={{ record[0] }}>{{ record[1] }}</option>
-                {% endfor %}
-              </select>
-
-            </div>
-          </div>
           <p>
           <div class="form-group">
             <label class="control-label col-sm-2" for="jname">Job Name *:</label>
-            <div class="col-sm-10"> 
-              <input type="text" class="form-control" name="jname" id="jname" placeholder="Job name and description">
+            <div class="col-sm-10">
+              <input type="text" class="form-control" name="jname" id="jname" value="{{records[0][2]}}">
             </div>
           </div>
           </p>
           <p>
           <div class="form-group">
             <label class="control-label col-sm-2" for="sdate">Start Date:</label>
-            <div class="col-sm-10"> 
-              <input type="text" class="form-control" name="sdate" id="sdate" placeholder="Start date">
+            <div class="col-sm-10">
+              <input type="text" class="form-control" name="sdate" id="sdate" value="{{records[0][3]}}">
             </div>
           </div>
           </p>
           <p>
           <div class="form-group">
-            <label class="control-label col-sm-2" for="sdate">End Date:</label>
-            <div class="col-sm-10"> 
-              <input type="text" class="form-control" name="edate" id="sdate" placeholder="Start date">
+            <label class="control-label col-sm-2" for="edate">End Date:</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" name="edate" id="edate" value="{{records[0][4]}}">
             </div>
           </div>
           </p>
           <p>
           <div class="form-group">
-            <label class="control-label col-sm-2" for="loc">Location *:</label>
-            <div class="col-sm-10"> 
-              <input type="text" class="form-control" name="loc" id="loc" placeholder="City and State">
+            <label class="control-label col-sm-2" for="location">Location *:</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" name="location" id="location" value="{{records[0][5]}}">
             </div>
           </div>
           </p>
           <p>
           <div class="form-group">
-            <label class="control-label col-sm-2" for="epay">Estimated Pay:</label>
-            <div class="col-sm-10"> 
-              <input type="text" class="form-control" name="epay" id="epay" placeholder="Calculated or fixed">
+            <label class="control-label col-sm-2" for="notes">Notes:</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" name="notes" id="notes" value="{{records[0][6]}}">
             </div>
           </div>
           </p>
           <p>
-          <div class="form-group"> 
+          <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
               <button type="cancel" class="btn btn-default ui-btn-{{theme_cancel}}" name="button" value="cancel">Cancel</button>
               <button type="submit" class="btn btn-default" name="button" value="save">Save</button>

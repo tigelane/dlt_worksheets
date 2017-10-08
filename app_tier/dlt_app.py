@@ -53,7 +53,7 @@ def index():
         '''.format(app_name)
     html += '''
         <p>
-        Current date and time for this server: 
+        Current date and time for this server:
         '''
     html += datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     html += '''
@@ -86,7 +86,7 @@ def apiv1_show_jobs(status):
         reply = {'status': 'OK', 'results': myList}
     except:
         reply = {'status': 'FAIL', 'results': "The Application server is OK, but is unable to show records from database {0}!".format(db_name)}
-    
+
     reply = {'general': reply}
     return jsonify(reply)
 
@@ -112,7 +112,7 @@ def apiv1_show_ws(status):
         reply = {'status': 'OK', 'results': myList}
     except:
         reply = {'status': 'FAIL', 'results': "The Application server is OK, but is unable to show records from database {0}!".format(db_name)}
-    
+
     write_log("{0} - {1}".format(reply['status'], reply['results']))
     reply = {'general': reply}
     return jsonify(reply)
@@ -141,7 +141,7 @@ def apiv1_add_ws(project_id):
 
     except:
         reply = {'status': 'FAIL', 'results': "The Application server is OK, but is unable to show records from database {0}!".format(db_name)}
-    
+
     write_log("{0} - {1}".format(reply['status'], reply['results']))
     reply = {'general': reply}
     return jsonify(reply)
@@ -170,7 +170,7 @@ def apiv1_add_job():
 
     except:
         reply = {'status': 'FAIL', 'results': "The Application server is OK, but is unable to show records from database {0}!".format(db_name)}
-    
+
     write_log("{0} - {1}".format(reply['status'], reply['results']))
     reply = {'general': reply}
     return jsonify(reply)
@@ -181,11 +181,11 @@ def apiv1_edit_job(this_id):
     # return:
     #     form_data = {"project_name": form_data[0][0], "worksheet_id":worksheet_id, "date":"15/5/2017", "resources":resources, "materials":materials}
 
-    sql_query = 'SELECT customers.id, customers.name, jobs.name, jobs.date_open, jobs.date_close, jobs.notes, status.status FROM jobs JOIN customers ON jobs.customer_id = customers.id JOIN status ON jobs.status_id = status.id WHERE jobs.id = {};'.format(this_id)
+
+    sql_query = 'SELECT customers.id, customers.name, jobs.name, jobs.date_open, jobs.date_close, jobs.location, jobs.notes, status.status FROM jobs JOIN customers ON jobs.customer_id = customers.id JOIN status ON jobs.status_id = status.id WHERE jobs.id = {};'.format(this_id)
     general = get_from_db(sql_query)
 
     all_info = {'general': general, 'resources': [], 'materials':[]}
-    print (all_info)
     return jsonify(all_info)
 
 @app.route('/api/v1/write_job/<this_id>/')
@@ -238,14 +238,14 @@ def apiv1_worksheet_save():
     #functionName = "def apiv1_worksheet_save():"
     request.get_data()
 
-    reply = {'status': 'OK', 'results': myList}   
-    reply = {'general': reply} 
+    reply = {'status': 'OK', 'results': myList}
+    reply = {'general': reply}
     return jsonify(reply)
 
 def open_mysql():
     global db
     ''' Opens a connection to MySQL at the given IP Address '''
-	
+
     try:
         # Open database connection
         db = MySQLdb.connect(db_addr,"root",db_pass)
@@ -268,7 +268,7 @@ def create_db():
 def open_db():
     global db
     ''' Opens the database at the given IP Address '''
-    	
+
     try:
         # Open database connection
         db = MySQLdb.connect(db_addr, "root", db_pass, db_name)
@@ -287,7 +287,7 @@ def add_row(text, date, name):
 	# Use the right database
 	sql_query = "INSERT INTO entry (id, entry, entry_date, name) VALUES (NULL, '{0}', '{1}', '{2}');".format(text, date, name)
 	open_db()
-	cursor = db.cursor()	
+	cursor = db.cursor()
 	cursor.execute(sql_query)
 	db.commit()
 

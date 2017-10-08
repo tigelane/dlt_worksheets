@@ -24,8 +24,8 @@ app_title = "DL Trucking - Daily Worksheets"
 #  Theme files and theme to use for the system
 theme = "a"
 theme_cancel = "b"
-theme_file_1 = "themes/dlt_themes.min.css" 
-theme_file_2 = "themes/jquery.mobile.icons.min.css" 
+theme_file_1 = "themes/dlt_themes.min.css"
+theme_file_2 = "themes/jquery.mobile.icons.min.css"
 
 app = Flask(__name__)
 
@@ -62,7 +62,7 @@ def basic_render(data_url, page_header, rendering_file, form_data):
 
 @app.route('/edit_job/<job_id>/')
 def edit_job(job_id):
-    
+
     data_url = '{0}/edit_job/{1}/'.format(url_base, job_id)
     rendering_file = 'edit_job.html'
     page_header = "DLT Edit a Job"
@@ -91,7 +91,7 @@ def save_job():
     # Add the rest to values that are optional
     formValues["sdate"] = request.form['sdate']
     formValues["epay"] = request.form['epay']
-    
+
 
     print (formValues)
     # Need to write info to the app server
@@ -186,7 +186,7 @@ def edit_ws(worksheet_id):
     except Exception as e:
         # print e
         return {'result':0, 'data':render_error_screen(e)}
-    
+
     form_data = {"project_name": all_data['general']['results'][0][0], "worksheet_id":worksheet_id, "date":all_data['general']['results'][0][1], "resources":all_data['resources']['results'], "materials":all_data['materials']['results']}
 
     html = document_header()
@@ -240,9 +240,9 @@ def document_header():
     """
     Import all CSS and javascript files.  Setup page theme.
     :return: html pages as rendered html
-    """    
-    theme_1 = url_for('static', filename=theme_file_1) 
-    theme_2 = url_for('static', filename=theme_file_2) 
+    """
+    theme_1 = url_for('static', filename=theme_file_1)
+    theme_2 = url_for('static', filename=theme_file_2)
 
     html = render_template('document_header.html', title=app_title, style_1=theme_1, style_2=theme_2)
     return html
@@ -251,7 +251,7 @@ def document_footer():
     """
     Close out the page.
     :return: html pages as rendered html
-    """    
+    """
     html = render_template('document_footer.html')
     return html
 
@@ -270,7 +270,7 @@ def render_error_screen(error):
 def get_header_graphic():
     """
     Should be included on all screens, pics a rangome graphic for the top of the screen
-    :return: url_for to the graphic for the header. 
+    :return: url_for to the graphic for the header.
     """
     header_graphic_file = header_graphic_files[random.randint(0, len(header_graphic_files)-1)]
     return url_for('static', filename=header_graphic_file)
@@ -279,7 +279,7 @@ def get_style_link():
     return url_for('static', filename=style_file)
 
 def open_url(url):
-    try: 
+    try:
         result = requests.get(url)
         # print ("In open url 1")
 
@@ -300,10 +300,10 @@ def open_url(url):
             error = "Response from Application Server: No records found."
             return {'result':0, 'data':render_error_screen(error)}
 
-    else:   
+    else:
         error = "Non 200 HTML response - Some wierd error."
         return {'result':0, 'data':render_error_screen(error)}
-    
+
     return {'result':1, 'data':decoded_json}
 
 @app.route('/login', methods=['GET'])
@@ -354,7 +354,7 @@ def add_new_gadget():
     formValues["wrating"] = request.form['wrating']
     formValues["notes"] = request.form['notes']
     # formValues[""] = request.form['']
-    
+
     print (formValues)
 
     message = "Gadget added of type: {}".format(formValues["type"])
@@ -406,7 +406,7 @@ def add_new_person():
     formValues["email"] = request.form['email']
     formValues["notes"] = request.form['notes']
     # formValues[""] = request.form['']
-    
+
     print (formValues)
     return redirect('/server_info', code=303)
 
@@ -415,7 +415,7 @@ def add_new_person():
 def show_jobs(jobs):
 
     url = 'http://{0}:{1}/show_jobs/{2}/'.format(app_addr, app_port, jobs)
-    
+
     if jobs == 'all':
         title = "All Jobs"
     else:
