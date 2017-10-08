@@ -7,10 +7,10 @@ INSERT INTO customers (name, notes) VALUES ("Dale", "Great end dumper");
 INSERT INTO customers (name, notes) VALUES ("Susan", "Wno't need any supervision");
 INSERT INTO customers (name, notes) VALUES ("Steve", "Pain in the ass");
 
-INSERT INTO jobs (name, customer_id, status_id) VALUES ("digger bobs", 1, 1);
-INSERT INTO jobs (name, customer_id, status_id) VALUES ("Killer pit", 3 ,1);
-INSERT INTO jobs (name, customer_id, status_id) VALUES ("Doppy Ridge", 2 ,2);
-INSERT INTO jobs (name, customer_id, status_id) VALUES ("I5 Paving", 4, 1);
+INSERT INTO jobs (name, customer_id, status_id, location) VALUES ("digger bobs", 1, 1, "Lake Oswego, OR");
+INSERT INTO jobs (name, customer_id, status_id, location) VALUES ("Killer pit", 3 ,1, "Woodburn, OR");
+INSERT INTO jobs (name, customer_id, status_id, location) VALUES ("Doppy Ridge", 2 ,2, "138 Marry Drive, Portland");
+INSERT INTO jobs (name, customer_id, status_id, location) VALUES ("I5 Paving", 4, 1, "84200 SE Division, PDX");
 INSERT INTO jobs (name, customer_id, status_id) VALUES ("205 Pot Holes", 4, 1);
 INSERT INTO jobs (name, customer_id, status_id) VALUES ("Bobs Back Yard", 1, 1);
 INSERT INTO jobs (name, customer_id, status_id) VALUES ("Steves Driveway", 5, 2);

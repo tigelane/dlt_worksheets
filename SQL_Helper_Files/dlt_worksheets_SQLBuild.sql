@@ -3,15 +3,15 @@ CREATE SCHEMA `job_worksheets` ;
 USE job_worksheets;
 
 CREATE TABLE status (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT, 
-    status TEXT 
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    status TEXT
 );
 
 INSERT INTO status (status) VALUES ("Open");
 INSERT INTO status (status) VALUES ("Closed");
 
 CREATE TABLE resource (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT, 
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
     name TEXT ,
     rate INTEGER,
     mobile_phone TEXT,
@@ -44,24 +44,25 @@ INSERT INTO resource (name, rate) VALUES ("Ditch Digger", 75);
 INSERT INTO resource (name, rate) VALUES ("Flagger", 55);
 
 CREATE TABLE customers (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT, 
-    name TEXT, 
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    name TEXT,
     address INTEGER,
     notes TEXT
 );
 
 CREATE TABLE jobs (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT, 
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
     name TEXT,
     customer_id INTEGER,
     date_open DATE,
     date_close DATE,
     status_id INTEGER,
+    location TEXT,
     notes TEXT
 );
 
 CREATE TABLE worksheets (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT, 
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
     jobs_id TEXT,
     date_open DATE,
     date_close DATE,
@@ -70,7 +71,7 @@ CREATE TABLE worksheets (
 );
 
 CREATE TABLE materials (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT, 
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
     name TEXT,
     cost INTEGER,
     worksheet_id INTEGER,
@@ -78,7 +79,7 @@ CREATE TABLE materials (
 );
 
 CREATE TABLE wsheet2resource (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT, 
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
     worksheet_id TEXT,
     resource_id INTEGER,
     hours INTEGER,
