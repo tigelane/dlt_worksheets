@@ -75,13 +75,13 @@ def save_job():
     Gather data from form post and post information to database
     :return: html pages as rendered html
     """
+
     if request.form["button"] == "cancel":
         return redirect('/jobs', code=303)
 
     formValues = {}
-    formValues["hco"] = request.form['hco']
-    formValues["janme"] = request.form['janme']
-    formValues["loc"] = request.form['loc']
+    formValues["jname"] = request.form['jname']
+    formValues["location"] = request.form['location']
 
     #  Look for missing items and show an error screen if needed
     for k, v in formValues.iteritems():
@@ -90,14 +90,15 @@ def save_job():
 
     # Add the rest to values that are optional
     formValues["sdate"] = request.form['sdate']
-    formValues["epay"] = request.form['epay']
+    formValues["notes"] = request.form['notes']
+    # formValues["status"]= request.form['status']
 
-
-    print (formValues)
+    print (formValues["location"])
     # Need to write info to the app server
 
+    # Then show a spash screen that it's saved, and close back to jobs.
 
-    return redirect('/server_info', code=303)
+    return render_success_screen("Sucessfully applied information", "/jobs")
 
 @app.route('/index')
 def index():
@@ -264,6 +265,19 @@ def render_error_screen(error):
     # Render HTML
     html = document_header()
     html += render_template('error.html', error=error)
+    html += document_footer()
+    return html
+
+def render_success_screen(message, url):
+    """
+    Takes the success as a string, takes a redirect UR:, returns full html page to display
+    :param message: Success message
+    :param url
+    :return: html pages as rendered html and redirect to url
+    """
+    # Render HTML
+    html = document_header()
+    html += render_template('success.html', message=message, url=url)
     html += document_footer()
     return html
 
