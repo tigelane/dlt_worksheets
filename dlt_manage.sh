@@ -3,9 +3,9 @@
 WEB="dlt_web"
 APP="dlt_app"
 DB="dlt_db"
-jenkins="dlt_jenkins"
-
+DB_PASS="H2xE6h6Bo9cgsnkiUhW076Qf"
 IPADDRESS="192.168.55.115"
+jenkins="dlt_jenkins"
 
 function usage()
 {
@@ -42,13 +42,17 @@ function not_used() {
     docker stop $APP
     docker run --rm --name $APP -v /Users/tige/Documents/Development/dlt_worksheets/app_tier:/opt/brimstone -e SQL_SERVER_IPADDR=$IPADDRESS -p 5000:5000 -ti tigelane/brimstone_app bash
 
+    DB="dlt_db"
+    DB_PASS="H2xE6h6Bo9cgsnkiUhW076Qf"
+    docker run --rm --name $DB -e MYSQL_ROOT_PASSWORD=H2xE6h6Bo9cgsnkiUhW076Qf -v /Users/tige/Documents/Development/dlt_worksheets/mysql:/var/lib/mysql -p 3306:3306 -d mysql
+
     docker run --rm --name $JENKINS -p 8080:8080 -p 50000:50000 -v /Users/tige/Documents/Development/Jenkins:/var/jenkins_home jenkins
 }
 # Start all of the containers
 function start_containers() {
     # Stop the containers if they are already running
     stop
-    
+
     # Run
     printf "\n\nStarting containers:\n"
     docker run --rm --name $WEB -v /Users/tige/Documents/Development/dlt_worksheets:/opt/brimstone -e APP_SERVER_IPADDR=$IPADDRESS -p 80:80 -d tigelane/brimstone_web /opt/brimstone/$WEB.py
@@ -56,7 +60,7 @@ function start_containers() {
     docker run --rm --name $APP -v /Users/tige/Documents/Development/dlt_worksheets/app_tier:/opt/brimstone -e SQL_SERVER_IPADDR=$IPADDRESS -p 5000:5000 -d tigelane/brimstone_app /opt/brimstone/$APP.py
 
     #### Run the DB
-    docker run --rm --name $DB -e MYSQL_ROOT_PASSWORD=H2xE6h6Bo9cgsnkiUhW076Qf -v /Users/tige/Documents/Development/dlt_worksheets/mysql:/var/lib/mysql -p 3306:3306 -d mysql
+    docker run --rm --name $DB -e MYSQL_ROOT_PASSWORD=$DB_PASS -v /Users/tige/Documents/Development/dlt_worksheets/mysql:/var/lib/mysql -p 3306:3306 -d mysql
 
     #### Print some info
     printf "\n\nRunning containers:\n"
@@ -84,9 +88,9 @@ while getopts "cbhrsi:" opt; do
     b)
         build_containers $CACHE
         ;;
-    h) 
+    h)
         usage
-        exit 1 
+        exit 1
         ;;
     i)
         IPADDRESS=$OPTARG >&2
@@ -94,9 +98,9 @@ while getopts "cbhrsi:" opt; do
     r)
         start_containers
         ;;
-    s) 
+    s)
         stop
-        exit 0 
+        exit 0
         ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -104,5 +108,3 @@ while getopts "cbhrsi:" opt; do
       ;;
     esac
 done
-
-

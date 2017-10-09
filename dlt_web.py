@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from flask import Flask, request, render_template, url_for, redirect, session
+from flask import Flask, request, render_template, url_for, redirect, session, jsonify
 
 from datetime import datetime
 import sys, requests, re, random, os
@@ -46,7 +46,7 @@ def write_log(entry):
 
 def basic_render(data_url, page_header, rendering_file, form_data):
     if data_url != "":
-        data = open_url(data_url)
+        data = get_url(data_url)
         if data['result'] == 0:
             return data['data']
         else:
@@ -68,37 +68,6 @@ def edit_job(job_id):
     page_header = "DLT Edit a Job"
 
     return basic_render(data_url, page_header, rendering_file, form_data)
-
-@app.route('/save_job', methods=['POST'])
-def save_job():
-    """
-    Gather data from form post and post information to database
-    :return: html pages as rendered html
-    """
-
-    if request.form["button"] == "cancel":
-        return redirect('/jobs', code=303)
-
-    formValues = {}
-    formValues["jname"] = request.form['jname']
-    formValues["location"] = request.form['location']
-
-    #  Look for missing items and show an error screen if needed
-    for k, v in formValues.iteritems():
-        if v == "":
-            return render_error_screen("You must specify all of the '*' values.")
-
-    # Add the rest to values that are optional
-    formValues["sdate"] = request.form['sdate']
-    formValues["notes"] = request.form['notes']
-    # formValues["status"]= request.form['status']
-
-    print (formValues["location"])
-    # Need to write info to the app server
-
-    # Then show a spash screen that it's saved, and close back to jobs.
-
-    return render_success_screen("Sucessfully applied information", "/jobs")
 
 @app.route('/index')
 def index():
@@ -161,7 +130,7 @@ def add_ws(project_id):
     data_url = '{0}/add_ws/{1}/'.format(url_base, project_id)
 
     if data_url != "":
-        data = open_url(data_url)
+        data = get_url(data_url)
 
         if data['result'] == 0:
             return data['data']
@@ -179,7 +148,7 @@ def edit_ws(worksheet_id):
     page_header = "{}".format(worksheet_id)
 
     try:
-        data = open_url(data_url)
+        data = get_url(data_url)
         if data['result'] == 0:
             return data['data']
         else:
@@ -227,7 +196,7 @@ def add_job():
     data_url = '{0}/add_job'.format(url_base)
 
     if data_url != "":
-        data = open_url(data_url)
+        data = get_url(data_url)
 
         if data['result'] == 0:
             return data['data']
@@ -292,7 +261,85 @@ def get_header_graphic():
 def get_style_link():
     return url_for('static', filename=style_file)
 
-def open_url(url):
+@app.route('/save_job', methods=['POST'])
+def save_job():
+    """
+    Gather data from form post and post information to database
+    :return: html pages as rendered html
+    """
+
+    if request.form["button"] == "cancel":
+        return redirect('/jobs', code=303)
+
+    formValues = {}
+    formValues["jname"] = request.form['jname']
+    formValues["location"] = request.form['location']
+
+    #  Look for missing items and show an error screen if needed
+    for k, v in formValues.iteritems():
+        if v == "":
+            return render_error_screen("You must specify all of the '*' values.")
+
+    # # Add the rest to values that are optional
+    # if request.form['sdate'] == "":
+    #     formValues["sdate"] = "NULL"
+    # else:
+    #     formValues["sdate"] = request.form['sdate']
+    #
+    # if request.form['edate'] == "":
+    #     formValues["edate"] = "NULL"
+    # else:
+    #     formValues["edate"] = request.form['edate']
+
+    formValues["notes"] = request.form['notes']
+    formValues["job_id"] = request.form['job_id']
+    # formValues["status"]= request.form['status']
+
+    # print ("Current formValues: {}".format(formValues))
+    # print (request.form)
+    # Need to write info to the app server
+
+    data_url = "{0}/write_job".format(url_base)
+
+    data = post_url(data_url, json.dumps(formValues))
+    if data['result'] == 0:
+        return data['data']
+    else:
+        records = data['data']['general']['results']
+
+    # Then show a spash screen that it's saved, and close back to jobs.
+
+    return render_success_screen("Sucessfully applied information", "/jobs")
+
+def post_url(url, data):
+    # print ("post_url - {} - {}".format(url, data))
+    # try:
+    result = requests.post(url, headers={'Content-Type': 'application/json'}, data=(data))
+    # print ("post_url - result: ".format(result.text))
+    # except as e:
+    #     error = "POST_URL - Application Server Failure: Not able to communicate with Application Server.  ERROR: {}".format(e)
+    #     return {'result':0, 'data':render_error_screen(error)}
+
+    decoded_json = json.loads(result.text)
+    if (result.status_code == 200):
+        # print ("In open url 2")
+        if decoded_json['general']['status'] == 'FAIL':
+            print (decoded_json)
+            error = "Database Failure: Response from Application Server: " + decoded_json['general']['results']
+            return {'result':0, 'data':render_error_screen(error)}
+
+        if len(decoded_json['general']['results']) == 0:
+            # print ("In open url 4")
+            error = "Response from Application Server: No records found."
+            return {'result':0, 'data':render_error_screen(error)}
+
+    else:
+        error = "Non 200 HTML response - Some wierd error."
+        return {'result':0, 'data':render_error_screen(error)}
+
+    return {'result':1, 'data':decoded_json}
+
+def get_url(url):
     try:
         result = requests.get(url)
         # print ("In open url 1")
@@ -435,7 +482,7 @@ def show_jobs(jobs):
     else:
         title = "Open Jobs"
 
-    data = open_url(url)
+    data = get_url(url)
     if data['result'] == 0:
         return data['data']
 

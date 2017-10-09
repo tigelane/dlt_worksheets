@@ -20,7 +20,7 @@
 
         {% for record in records %}
         <!-- Create a list for the records passed to the page. -->
-        <li><a href="/edit_job/{{ record[0] }}/">Job: {{ record[1] }}          Customer: {{ record[2] }}</a></li>
+        <li><a href="/edit_job/{{ record[0] }}/">Customer: {{ record[2] }} &nbsp; &nbsp; &nbsp; &nbsp; Job: {{ record[1] }}          </a></li>
         {% endfor %}
 
     </ul>

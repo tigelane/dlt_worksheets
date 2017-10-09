@@ -178,20 +178,44 @@ def apiv1_add_job():
 @app.route('/api/v1/edit_job/<this_id>/')
 def apiv1_edit_job(this_id):
 
-    # return:
-    #     form_data = {"project_name": form_data[0][0], "worksheet_id":worksheet_id, "date":"15/5/2017", "resources":resources, "materials":materials}
-
-
-    sql_query = 'SELECT customers.id, customers.name, jobs.name, jobs.date_open, jobs.date_close, jobs.location, jobs.notes, status.status FROM jobs JOIN customers ON jobs.customer_id = customers.id JOIN status ON jobs.status_id = status.id WHERE jobs.id = {};'.format(this_id)
+    sql_query = 'SELECT customers.id, customers.name, jobs.name, jobs.date_open, jobs.date_close, jobs.location, jobs.notes, status.status, jobs.id FROM jobs JOIN customers ON jobs.customer_id = customers.id JOIN status ON jobs.status_id = status.id WHERE jobs.id = {};'.format(this_id)
     general = get_from_db(sql_query)
 
+    # print (general)
     all_info = {'general': general, 'resources': [], 'materials':[]}
     return jsonify(all_info)
 
-@app.route('/api/v1/write_job/<this_id>/')
-def apiv1_write_job(this_id):
-    pass
+@app.route('/api/v1/write_job', methods=['POST'])
+def apiv1_write_job():
+    if request.method == "POST":
+        formValues = request.get_json()
 
+    sql_query = "UPDATE jobs SET name = '{0}', location='{1}', notes='{2}' WHERE id={3};".format(formValues["jname"], formValues["location"], formValues["notes"], formValues["job_id"])
+    # print ("My sql query is: {0}".format(sql_query))
+
+    try:
+        open_db()
+        cursor = db.cursor()
+        cursor.execute(sql_query)
+        data = cursor.fetchall()
+        db.commit()
+
+    except:
+        reply = {'status': 'FAIL', 'results': "E1002: The Application server is OK, but was unable to write the record to the database!"}
+
+    finally:
+            close_db()
+
+    if cursor.rowcount == 1:
+        reply = {'status': 'OK', 'results': ["Changes made"]}
+    else:
+        reply = {'status': 'OK', 'results': ["No changes were made to the database"]}
+
+    # print ("Number of rows updated: {} Current app data: {}".format(cursor.rowcount, data))
+    #
+    # print ("write_job - reply: {}".format(reply))
+    reply = {'general': reply}
+    return jsonify(reply)
 
 @app.route('/api/v1/get_ws/<worksheet_id>/')
 def apiv1_get_ws(worksheet_id):

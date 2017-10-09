@@ -7,8 +7,8 @@ MAINTAINER Tige Phillips <tige@tigelane.com>
 # Port to access the Flask application on - change if needed.
 EXPOSE 80
 
-# RUN apt-get update ;\
-#     apt-get -y upgrade
+RUN apt-get update ;\
+    apt-get -y upgrade
 
 ####################
 # PYTHON and TOOLS #
@@ -22,7 +22,7 @@ RUN DEBIAN_FRONTEND=noninteractive pip install flask requests
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install vim
 
 #################
-# App install 
+# App install
 #################
 RUN mkdir -p /usr/local/brimstone/static
 RUN mkdir -p /usr/local/brimstone/templates
@@ -33,7 +33,7 @@ ADD static /usr/local/brimstone/static
 ADD templates /usr/local/brimstone/templates
 
 #################
-# App Options 
+# App Options
 #################
 # Place bash users directly into /usr/local/brimstone
 WORKDIR /usr/local/brimstone

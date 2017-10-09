@@ -7,8 +7,8 @@ MAINTAINER Tige Phillips <tige@tigelane.com>
 # Port to access the Flask application on - change if needed.
 EXPOSE 5000
 
-# RUN apt-get update ;\
-#     apt-get -y upgrade
+RUN apt-get update ;\
+    apt-get -y upgrade
 
 ####################
 # PYTHON and TOOLS #
@@ -35,7 +35,7 @@ CMD mkdir /usr/local/brimstone
 ADD dlt_app.py /usr/local/brimstone/
 
 #################
-# App Options 
+# App Options
 #################
 # Place bash users directly into /usr/local/brimstone
 WORKDIR /usr/local/brimstone
