@@ -204,7 +204,17 @@ def add_job():
             print data
             id = data['data']['general']['results'][0][0]
 
-    return edit_job(id)
+    return enter_job(id)
+
+@app.route('/enter_job/<job_id>/')
+def enter_job(job_id):
+
+    data_url = '{0}/enter_job/{1}/'.format(url_base, job_id)
+    rendering_file = 'enter_job.html'
+    page_header = "DLT enter a Job"
+
+    return basic_render(data_url, page_header, rendering_file, form_data)
+
 
 def document_header():
     """
